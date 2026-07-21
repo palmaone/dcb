@@ -43,8 +43,9 @@ services:
       VITE_API_URL: http://localhost:8000
     volumes:
       - ./frontend:/app
-    # Run dev server bypassing pre/postinstall hooks
-    command: sh -c "npm install --ignore-scripts && npm run dev"
+      - /app/node_modules
+    # Run dev server bypassing pre/postinstall hooks using locked dependencies
+    command: sh -c "if [ -f package-lock.json ]; then npm ci --ignore-scripts; else npm install --ignore-scripts; fi && npm run dev"
     depends_on:
       - backend
 

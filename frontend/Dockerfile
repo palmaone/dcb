@@ -2,26 +2,31 @@ FROM node:20-alpine AS build
 
 WORKDIR /app
 
-# Copy hardening config and project definition
-COPY .npmrc package.json ./
+# Copy hardening config and project definition files
+COPY .npmrc package.json package-lock.json* ./
 
-# Install packages with ignore-scripts setting active
-RUN npm install
+# Install exact locked dependencies with ignore-scripts setting active
+RUN npm ci --ignore-scripts
 
 COPY . .
 RUN npm run build
 
-# Production server stage (using high-performance minimal alpine running node/nginx/etc)
+# Production server stage
 FROM node:20-alpine AS production
 
 WORKDIR /app
 
-# Non-root user setup
-USER node
+# Copy lockfile and package manifest
+COPY .npmrc package.json package-lock.json* ./
 
+# Copy built dist files
 COPY --from=build /app/dist ./dist
-RUN npm install -g serve --ignore-scripts
+
+# Install ONLY production dependencies strictly with ignore-scripts
+RUN npm ci --omit=dev --ignore-scripts
+
+USER node
 
 EXPOSE 3000
 
-CMD ["serve", "-s", "dist", "-l", "3000"]
+CMD ["./node_modules/.bin/serve", "-s", "dist", "-l", "3000"]
