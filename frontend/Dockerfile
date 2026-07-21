@@ -8,6 +8,9 @@ COPY .npmrc package.json package-lock.json* ./
 # Install exact locked dependencies with ignore-scripts setting active
 RUN npm ci --ignore-scripts
 
+ARG VITE_API_URL=/api
+ENV VITE_API_URL=${VITE_API_URL}
+
 COPY . .
 RUN npm run build
 
