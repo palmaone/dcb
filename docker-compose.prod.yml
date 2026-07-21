@@ -13,9 +13,11 @@ services:
       - "traefik.http.routers.backend.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)"
       - "traefik.http.routers.backend.entrypoints=websecure"
       - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.backend.priority=100"
       - "traefik.http.services.backend.loadbalancer.server.port=8000"
-      # Strip /api prefix before forwarding to backend (so backend gets / or /db-test instead of /api/db-test)
-      - "traefik.http.middlewares.backend-strip.stripprefix.prefixes=/api"
+      # Strip /api or /api/ cleanly using regex middleware
+      - "traefik.http.middlewares.backend-strip.replacepathregex.regex=^/api/?(.*)"
+      - "traefik.http.middlewares.backend-strip.replacepathregex.replacement=/$${1}"
       - "traefik.http.routers.backend.middlewares=backend-strip"
 
   frontend:

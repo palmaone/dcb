@@ -25,7 +25,8 @@ onMounted(async () => {
   }
 
   try {
-    const res = await fetch(apiBase + '/db-test')
+    const dbEndpoint = apiBase === '/api' ? '/api/db-test' : apiBase + '/db-test'
+    const res = await fetch(dbEndpoint)
     const data = await res.json()
     dbStatus.value = `Database Status: ${data.status} (Server Time: ${data.time ? JSON.stringify(data.time) : 'N/A'})`
   } catch (err) {
