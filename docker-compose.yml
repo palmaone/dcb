@@ -1,0 +1,52 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: fsapp-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: supersecretpassword
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fsapp-backend
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgres://postgres:supersecretpassword@db:5432/postgres
+      FRONTEND_URL: http://localhost:3000
+    volumes:
+      - ./backend:/app
+    command: run --allow-net --allow-env --watch main.ts
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    image: node:20-alpine
+    container_name: fsapp-frontend
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    environment:
+      VITE_API_URL: http://localhost:8000
+    volumes:
+      - ./frontend:/app
+    # Run dev server bypassing pre/postinstall hooks
+    command: sh -c "npm install --ignore-scripts && npm run dev"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
