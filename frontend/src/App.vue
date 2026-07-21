@@ -6,7 +6,9 @@ const dbStatus = ref('Connecting...')
 
 onMounted(async () => {
   try {
-    const res = await fetch(import.meta.env.VITE_API_URL || 'http://localhost:8000')
+    // Cast import.meta to any to access env in TypeScript files
+    const apiBase = (import.meta as any).env?.VITE_API_URL || 'http://localhost:8000'
+    const res = await fetch(apiBase)
     const data = await res.json()
     backendStatus.value = `Connected to ${data.service} (${data.status})`
   } catch (err) {
@@ -14,7 +16,8 @@ onMounted(async () => {
   }
 
   try {
-    const res = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:8000') + '/db-test')
+    const apiBase = (import.meta as any).env?.VITE_API_URL || 'http://localhost:8000'
+    const res = await fetch(apiBase + '/db-test')
     const data = await res.json()
     dbStatus.value = `Database Status: ${data.status} (Server Time: ${data.time ? JSON.stringify(data.time) : 'N/A'})`
   } catch (err) {

@@ -5,10 +5,23 @@ import { Client } from "https://deno.land/x/postgres@v0.19.3/mod.ts";
 
 const app = new Hono();
 
-// Security: configure CORS
+// Security: configure CORS dynamically from Environment Variables
+const rawCorsOrigin = Deno.env.get("CORS_ORIGIN") || Deno.env.get("FRONTEND_URL");
+
+const allowedOrigins = rawCorsOrigin
+  ? rawCorsOrigin.split(",").map((o) => o.trim()).filter(Boolean)
+  : ["http://localhost:3000"];
+
 app.use("*", cors({
-  origin: "http://localhost:3000",
+  origin: (origin) => {
+    // If no origin (e.g. server-to-server calls or curl) or origin is allowed
+    if (!origin || allowedOrigins.includes("*") || allowedOrigins.includes(origin)) {
+      return origin || "*";
+    }
+    return null;
+  },
   allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowHeaders: ["Content-Type", "Authorization"],
 }));
 
 // Postgres client initialization

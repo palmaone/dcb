@@ -7,6 +7,7 @@ services:
       # Inject the external PostgreSQL connection string created in Dokploy dashboard
       DATABASE_URL: ${DATABASE_URL}
       FRONTEND_URL: ${FRONTEND_PUBLIC_URL}
+      CORS_ORIGIN: ${FRONTEND_PUBLIC_URL}
 
   frontend:
     build:
