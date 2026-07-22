@@ -27,6 +27,14 @@ app.use("*", cors({
 // Postgres client initialization
 const databaseUrl = Deno.env.get("DATABASE_URL") || "postgres://postgres:postgres@db:5432/postgres";
 const client = new Client(databaseUrl);
+let isConnected = false;
+
+async function ensureDbConnected() {
+  if (!isConnected) {
+    await client.connect();
+    isConnected = true;
+  }
+}
 
 app.get("/", (c) => {
   return c.json({ status: "healthy", service: "backend" });
@@ -34,12 +42,12 @@ app.get("/", (c) => {
 
 app.get("/db-test", async (c) => {
   try {
-    await client.connect();
+    await ensureDbConnected();
     const result = await client.queryObject`SELECT NOW()`;
-    await client.end();
     return c.json({ status: "connected", time: result.rows[0] });
-  } catch (err) {
-    return c.json({ status: "error", error: err.message }, 500);
+  } catch (err: any) {
+    isConnected = false;
+    return c.json({ status: "error", error: err.message || String(err) }, 500);
   }
 });
 
