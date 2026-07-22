@@ -28,19 +28,26 @@ app.use("*", cors({
 const databaseUrl = Deno.env.get("DATABASE_URL") || "postgres://postgres:postgres@db:5432/postgres";
 const client = new Client(databaseUrl);
 
-app.get("/", (c) => {
+// API Router (Define all endpoints cleanly here once)
+const api = new Hono();
+
+api.get("/", (c) => {
   return c.json({ status: "healthy", service: "backend" });
 });
 
-app.get("/db-test", async (c) => {
+api.get("/db-test", async (c) => {
   try {
     await client.connect();
     const result = await client.queryObject`SELECT NOW()`;
     await client.end();
     return c.json({ status: "connected", time: result.rows[0] });
   } catch (err) {
-    return c.json({ status: "error", error: err.message }, 500);
+    return c.json({ status: "error", error: (err as any).message }, 500);
   }
 });
+
+// Mount API Router: Works seamlessly for both / and /api
+app.route("/", api);
+app.route("/api", api);
 
 Deno.serve({ port: 8000 }, app.fetch);

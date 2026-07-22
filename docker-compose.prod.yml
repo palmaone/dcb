@@ -15,10 +15,6 @@ services:
       - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
       - "traefik.http.routers.backend.priority=100"
       - "traefik.http.services.backend.loadbalancer.server.port=8000"
-      # Strip /api or /api/ cleanly using regex middleware
-      - "traefik.http.middlewares.backend-strip.replacepathregex.regex=^/api/?(.*)"
-      - "traefik.http.middlewares.backend-strip.replacepathregex.replacement=/$${1}"
-      - "traefik.http.routers.backend.middlewares=backend-strip"
 
   frontend:
     build:
