@@ -26,6 +26,7 @@ app.use("*", cors({
 
 // Postgres client initialization
 const databaseUrl = Deno.env.get("DATABASE_URL") || "postgres://postgres:postgres@db:5432/postgres";
+console.log(`Connecting to database at ${databaseUrl}`);
 const client = new Client(databaseUrl);
 let isConnected = false;
 
