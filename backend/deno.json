@@ -1,6 +1,15 @@
 {
   "tasks": {
-    "start": "deno run --allow-net --allow-env --watch main.ts"
+    "start": "deno run --allow-net --allow-env --watch src/main.ts",
+    "migrate": "deno run -A migrate.ts"
   },
-  "imports": {}
+  "imports": {
+    "@db/postgres": "jsr:@db/postgres@^0.19.5",
+    "@std/dotenv": "jsr:@std/dotenv@^0.225.7",
+    "@std/uuid": "jsr:@std/uuid@^1.1.1",
+    "@types/pg": "npm:@types/pg@^8.20.0",
+    "hono": "jsr:@hono/hono@4",
+    "hono/cors": "jsr:@hono/hono@4/cors",
+    "hono/logger": "jsr:@hono/hono@4/logger"
+  }
 }

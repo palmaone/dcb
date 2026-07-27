@@ -1,0 +1,7 @@
+# .dockerignore (in project root)
+frontend/**
+backend/node_modules
+**/.git
+**/*.md
+**/Dockerfile*
+**/docker-compose*.yml   

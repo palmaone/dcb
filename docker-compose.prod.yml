@@ -1,8 +1,8 @@
 services:
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./backend/Dockerfile
     environment:
       # Inject the external PostgreSQL connection string created in Dokploy dashboard
       DATABASE_URL: ${DATABASE_URL}

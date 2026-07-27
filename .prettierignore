@@ -1,0 +1,6 @@
+# Ignore all node_modules in any depth
+**/node_modules/
+
+# Ignore build outputs
+**/dist/
+**/build/
