@@ -1,6 +1,11 @@
 FROM denoland/deno:latest
 
 WORKDIR /app/backend
+# Declare the build argument with a default value (optional)
+ARG RUN_MIGRATIONS=false
+# (Optional) Promote to ENV if you need it at runtime too
+ENV RUN_MIGRATIONS=${RUN_MIGRATIONS}
+
 # Copy app folders
 COPY shared/ /app/shared/
 COPY backend/deno.json backend/deno.lock ./
@@ -14,12 +19,12 @@ RUN deno cache --log-level=debug src/main.ts migrate.ts migrations/index.ts
 RUN chown -R deno:deno /deno-dir
 
 # Copy and make script executable (MUST be done as root)
-COPY backend/docker-entrypoint.sh .
-RUN chmod +x docker-entrypoint.sh
+COPY backend/docker-entrypoint.sh /app/backend/docker-entrypoint.sh
+RUN chmod +x /app/backend/docker-entrypoint.sh
 
 # Security: Run as non-root user
 USER deno
 EXPOSE 8000
 # Set the entrypoint
-ENTRYPOINT ["sh", "./docker-entrypoint.sh"]
+ENTRYPOINT ["sh", "/app/backend/docker-entrypoint.sh"]
 # CMD ["run", "--allow-net", "--allow-env", "src/main.ts"]

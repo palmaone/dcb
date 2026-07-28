@@ -2,6 +2,9 @@ services:
   backend:
     build:
       context: .
+      args:
+        # Map the Dokploy Env Var to the Docker Build Arg
+        RUN_MIGRATIONS: ${RUN_MIGRATIONS} 
       dockerfile: ./backend/Dockerfile
     environment:
       # Inject the external PostgreSQL connection string created in Dokploy dashboard
