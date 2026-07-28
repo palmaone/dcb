@@ -1,17 +1,14 @@
 <template>
   <v-container fluid>
     <v-card>
-      <v-data-table 
-        :items="usuarios"
-        :headers="tbl_headers"
-      >
+      <v-data-table :items="clientes" :headers="tbl_headers">
         <template #top>
           <v-toolbar flat>
-              <v-toolbar-title>Usuarios</v-toolbar-title>
-              <v-spacer />
-              <nuevo-cliente-modal />
+            <v-toolbar-title>Clientes</v-toolbar-title>
+            <v-spacer />
+            <nuevo-cliente-modal />
           </v-toolbar>
-      </template>
+        </template>
       </v-data-table>
     </v-card>
   </v-container>
@@ -21,12 +18,12 @@ import { onMounted, ref, defineComponent } from 'vue';
 import { getApiBase, safeFetchJson } from '../composables/main.compose';
 import NuevoClienteModal from './Clientes/NuevoClienteModal.vue';
 defineComponent({
-  name:"Clientes",
+  name: "Clientes",
   components: {
     NuevoClienteModal
   }
 })
-const usuarios = ref([])
+const clientes = ref([])
 const tbl_headers = [
   {
     title: 'Nº',
@@ -70,14 +67,14 @@ const tbl_headers = [
     key: 'email',
     width: '1%'
   },
-   {
+  {
     title: 'Entre calles',
     align: 'start',
     sortable: true,
     key: 'entre_calles',
     width: '1%'
   },
-   {
+  {
     title: 'Persona confianza',
     align: 'start',
     sortable: true,
@@ -86,12 +83,12 @@ const tbl_headers = [
   },
 ]
 
-onMounted(async ()=> {
+onMounted(async () => {
   const apiBase = getApiBase()
   console.log(`Connecting to backend at ${apiBase}`)
   try {
     const data = await safeFetchJson(apiBase + '/clientes')
-    usuarios.value = data
+    clientes.value = data
   } catch (err: any) {
     console.log(`Failed to connect: ${err.message || err}`);
   }

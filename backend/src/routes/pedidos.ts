@@ -81,4 +81,4 @@ const format_pedidos = async ( result: QueryObjectResult<Pedido>, c: Context<Bla
     }
 }
 
-export default pedidos
+export default pedidos;

@@ -4,9 +4,9 @@ import { cors } from "hono/cors";
 // import { logger } from "hono/logger";
 import { client, isConnected } from "./db/connection.ts"
 import { Usuario, UsuarioTData } from "../../shared/models/Usuario.ts";
-import { Cliente, ClienteTData } from "../../shared/models/Cliente.ts";
 import { Sucursal, SucursalTData } from "../../shared/models/Sucursal.ts";
 import pedidos from "./routes/pedidos.ts";
+import clientes from "./routes/clientes.ts"
 
 
 const app = new Hono();
@@ -50,35 +50,6 @@ app.get("/db-test", async (c) => {
     try {
       const result = await client.queryObject`SELECT NOW()`;
       return c.json({ status: "connected", time: result.rows[0] });
-    } catch (err: Error | unknown) {
-      return c.json(
-        {
-          status: "error",
-          error: err instanceof Error ? err.message : String(err)
-        },
-        500
-      );
-    }
-  }
-  return c.json(
-    {
-      status: "error",
-      error: "connection failed"
-    },
-  500)
-});
-
-
-
-app.get("/clientes", async (c) => {
-  if(isConnected) {
-    try {
-      const result = await client.queryObject<Cliente>`SELECT * FROM clientes`
-      const clientes = result.rows.map((u, index) => {
-        const nombre_completo = `${u.nombre} ${u.apellido}`
-        return { ...u, index: index+1, nombre_completo } as ClienteTData
-      })
-      return c.json(clientes);
     } catch (err: Error | unknown) {
       return c.json(
         {
@@ -149,5 +120,6 @@ app.get("/sucursales", async (c) => {
 });
 
 app.route("/pedidos", pedidos)
+app.route("/clientes", clientes)
 
 Deno.serve({ port: 8000 }, app.fetch);
