@@ -5,7 +5,7 @@ const databaseUrl =
   Deno.env.get("DATABASE_URL") ||
   "postgres://postgres:postgres@db:5432/postgres";
 console.log(`Connecting to database at ${databaseUrl}`);
-const client = new Client(databaseUrl);
+const pgdb_client = new Client(databaseUrl);
 let isConnected = false;
 try {
   isConnected = await ensureDbConnected()
@@ -18,13 +18,13 @@ try {
 
 async function ensureDbConnected(): Promise<boolean> {
   if (!isConnected) {
-    await client.connect();
+    await pgdb_client.connect();
     return true;
   }
   return isConnected
 }
 
 export {
-  client,
+  pgdb_client,
   isConnected
 }

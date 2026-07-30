@@ -17,8 +17,10 @@ export const migrations: Migration[] = [
         nombre TEXT NOT NULL,
         apellido TEXT NOT NULL,
         username TEXT NOT NULL,
+        password TEXT NOT NULL,
         telefono TEXT,
         email TEXT NOT NULL,
+        rol TEXT NOT NULL,
         created_at TIMESTAMPTZ DEFAULT NOW()
         );
       `,
@@ -32,7 +34,7 @@ export const migrations: Migration[] = [
         email TEXT NOT NULL,
         entre_calles TEXT NOT NULL,
         persona_confianza TEXT NOT NULL,
-        notas JSONB,
+        notas TEXT,
         created_at TIMESTAMPTZ DEFAULT NOW()
         );
       `,
@@ -52,17 +54,17 @@ export const migrations: Migration[] = [
         color TEXT,
         sabor TEXT,
         extra_ingredientes JSONB,
-        url_img_decora JSONB,
+        url_img_decora TEXT,
         accesorios JSONB,
         tipo_base TEXT NOT NULL,
-        observaciones JSONB,
+        observaciones TEXT,
         created_at TIMESTAMPTZ DEFAULT NOW()
         );
       `,
       `CREATE TABLE IF NOT EXISTS info_entregas (
         id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
         domicilio TEXT NOT NULL,
-        referencias JSONB NOT NULL,
+        referencias TEXT NOT NULL,
         fecha_hora_entrega TIMESTAMPTZ NOT NULL,
         created_at TIMESTAMPTZ DEFAULT NOW()
         );

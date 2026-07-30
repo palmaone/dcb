@@ -3,7 +3,7 @@ FROM node:26-alpine AS build
 WORKDIR /app
 
 # Copy hardening config and project definition files
-COPY .npmrc package.json package-lock.json* ./
+COPY .npmrc package.json package-lock.json* tsconfig.json ./
 
 # Install exact locked dependencies with ignore-scripts setting active
 RUN npm ci --ignore-scripts

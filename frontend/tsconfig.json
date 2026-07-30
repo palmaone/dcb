@@ -1,0 +1,14 @@
+{
+   "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "..",
+    "types": ["vuetify"] 
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts", 
+    "src/**/*.tsx",
+    "src/**/*",
+    "src/**/*.vue",
+    "../shared/**/*"],
+}

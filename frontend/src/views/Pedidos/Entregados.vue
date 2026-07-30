@@ -19,10 +19,10 @@
 <script setup lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
 
-import { uiStore } from '../../stores/ui.store.ts'
+import { uiStore } from '../../stores/ui.store'
 import NuevoPedidoModal from '../../components/NuevoPedido/NuevoPedidoModal.vue'
-import { getApiBase, safeFetchJson } from '../../composables/main.compose.ts';
-import { PedidoTData } from '../../../../shared/models/Pedido.ts';
+import { getApiBase, safeFetchJson } from '../../composables/main.compose';
+import { PedidoTData } from '../../../../shared/models/Pedido';
 
 const { showNewOrderModal } = uiStore()
 defineComponent({
@@ -70,7 +70,7 @@ const tbl_headers = [
     sortable: true,
     key: 'quien_recibe',
   }
-]
+] as const
 
 function openNewOrderModal() {
   showNewOrderModal(true)

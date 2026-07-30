@@ -8,7 +8,7 @@ export interface Cliente {
   email: string
   entre_calles: string
   persona_confianza: string
-  notas: string[] | null
+  notas: string | null
   created_at: Date
 }
 

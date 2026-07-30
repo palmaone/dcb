@@ -1,7 +1,7 @@
 import { Context, Hono } from "hono";
 import { Pedido, PedidoTData } from "../../../shared/models/Pedido.ts";
 import { DetallesPastel } from "../../../shared/models/DetallesPastel.ts"
-import { client, isConnected } from "../db/connection.ts";
+import { pgdb_client, isConnected } from "../db/connection.ts";
 import { Usuario } from "../../../shared/models/Usuario.ts";
 import { Cliente } from "../../../shared/models/Cliente.ts";
 import { Sucursal } from "../../../shared/models/Sucursal.ts";
@@ -18,24 +18,24 @@ pedidos.get("/:param", async (c) => {
   if(isConnected) {
     switch (param) {
       case "pendientes": {
-        const result = await client.queryObject<Pedido>`SELECT * FROM pedidos WHERE status = 'pendiente'`
+        const result = await pgdb_client.queryObject<Pedido>`SELECT * FROM pedidos WHERE status = 'pendiente'`
         return format_pedidos(result, c)
       }
       case "listos-para-entregar": {
-        const result = await client.queryObject<Pedido>`SELECT * FROM pedidos WHERE status = 'listo'`
+        const result = await pgdb_client.queryObject<Pedido>`SELECT * FROM pedidos WHERE status = 'listo'`
         return format_pedidos(result, c)
       }
       case "procesando": {
-        const result = await client.queryObject<Pedido>`SELECT * FROM pedidos WHERE status = 'procesando'`
+        const result = await pgdb_client.queryObject<Pedido>`SELECT * FROM pedidos WHERE status = 'procesando'`
         return format_pedidos(result, c)
       }
       case "entregados": {
-        const result = await client.queryObject<Pedido>`SELECT * FROM pedidos WHERE status = 'entregado'`
+        const result = await pgdb_client.queryObject<Pedido>`SELECT * FROM pedidos WHERE status = 'entregado'`
         return format_pedidos(result, c)
       }
       case "todos":
       default: {
-        const result = await client.queryObject<Pedido>`SELECT * FROM pedidos`
+        const result = await pgdb_client.queryObject<Pedido>`SELECT * FROM pedidos`
         return format_pedidos(result, c)
       }
     }
@@ -52,13 +52,13 @@ pedidos.get("/:param", async (c) => {
 const format_pedidos = async ( result: QueryObjectResult<Pedido>, c: Context<BlankEnv, "/:param", BlankInput>) => {
   try {
       const pedidos = await Promise.all(result.rows.map(async (pedido, index) => {
-        const sucursalData = await client.queryObject<Sucursal>`SELECT * FROM sucursales WHERE id = ${pedido.id_sucursal}`
+        const sucursalData = await pgdb_client.queryObject<Sucursal>`SELECT * FROM sucursales WHERE id = ${pedido.id_sucursal}`
         const sucursal = sucursalData.rows[0].nombre
-        const clienteData = await client.queryObject<Cliente>`SELECT * FROM clientes WHERE id = ${pedido.id_cliente}`
+        const clienteData = await pgdb_client.queryObject<Cliente>`SELECT * FROM clientes WHERE id = ${pedido.id_cliente}`
         const nombre_cliente = clienteData.rows[0].nombre + ' ' + clienteData.rows[0].apellido
-        const usuarioData = await client.queryObject<Usuario>`SELECT * FROM usuarios WHERE id = ${pedido.id_usuario}`
+        const usuarioData = await pgdb_client.queryObject<Usuario>`SELECT * FROM usuarios WHERE id = ${pedido.id_usuario}`
         const nombre_usuario = usuarioData.rows[0].nombre
-        const detallesData = await client.queryObject<DetallesPastel>`SELECT * FROM detalles_pastel WHERE id = ${pedido.id_detalle_pastel}`
+        const detallesData = await pgdb_client.queryObject<DetallesPastel>`SELECT * FROM detalles_pastel WHERE id = ${pedido.id_detalle_pastel}`
         const detalles_pastel = detallesData.rows[0]
         return { 
           ...pedido,

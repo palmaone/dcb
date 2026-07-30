@@ -4,16 +4,27 @@
     "jsr:@db/postgres@*": "0.19.5",
     "jsr:@db/postgres@~0.19.5": "0.19.5",
     "jsr:@deno/installer-shell-setup@*": "0.3.4",
+    "jsr:@denosaurs/plug@^1.1.0": "1.1.0",
+    "jsr:@felix/argon2@*": "3.0.6",
+    "jsr:@felix/argon2@^3.0.6": "3.0.6",
     "jsr:@hono/hono@4": "4.12.31",
+    "jsr:@posva/clipboard-text@*": "2.0.1",
+    "jsr:@std/assert@*": "1.0.19",
     "jsr:@std/bytes@^1.0.5": "1.0.6",
     "jsr:@std/bytes@^1.0.6": "1.0.6",
     "jsr:@std/crypto@^1.0.4": "1.1.0",
     "jsr:@std/crypto@^1.1.0": "1.1.0",
     "jsr:@std/dotenv@~0.225.7": "0.225.7",
+    "jsr:@std/encoding@1": "1.0.11",
     "jsr:@std/encoding@^1.0.9": "1.0.11",
+    "jsr:@std/fmt@1": "1.0.10",
     "jsr:@std/fmt@^1.0.6": "1.0.10",
+    "jsr:@std/fs@1": "1.0.24",
+    "jsr:@std/internal@^1.0.12": "1.0.14",
     "jsr:@std/internal@^1.0.14": "1.0.14",
+    "jsr:@std/path@1": "1.1.6",
     "jsr:@std/path@^1.0.8": "1.1.6",
+    "jsr:@std/path@^1.1.5": "1.1.6",
     "jsr:@std/uuid@^1.1.1": "1.1.1",
     "npm:@types/pg@^8.20.0": "8.20.0"
   },
@@ -23,16 +34,40 @@
       "dependencies": [
         "jsr:@std/bytes@^1.0.5",
         "jsr:@std/crypto@^1.0.4",
-        "jsr:@std/encoding",
-        "jsr:@std/fmt",
-        "jsr:@std/path"
+        "jsr:@std/encoding@^1.0.9",
+        "jsr:@std/fmt@^1.0.6",
+        "jsr:@std/path@^1.0.8"
       ]
     },
     "@deno/installer-shell-setup@0.3.4": {
       "integrity": "48665d1a737d487cce6874bc97bba70a5aeffa7053aca3f60df93c6fab8963b4"
     },
+    "@denosaurs/plug@1.1.0": {
+      "integrity": "eb2f0b7546c7bca2000d8b0282c54d50d91cf6d75cb26a80df25a6de8c4bc044",
+      "dependencies": [
+        "jsr:@std/encoding@1",
+        "jsr:@std/fmt@1",
+        "jsr:@std/fs",
+        "jsr:@std/path@1"
+      ]
+    },
+    "@felix/argon2@3.0.6": {
+      "integrity": "8480d5cbdacf1baa7acd07fcffed8780aaa158e420c41eef8f2fdd824846a2fe",
+      "dependencies": [
+        "jsr:@denosaurs/plug"
+      ]
+    },
     "@hono/hono@4.12.31": {
       "integrity": "6a31d6811a4e217ab7c59655e68f881372c39e191ace73e4aeed02fc1227185d"
+    },
+    "@posva/clipboard-text@2.0.1": {
+      "integrity": "c4519ccc0dbe9a16e945be701c6e6761b6cc113aed5a33507507ab4648cecdd2"
+    },
+    "@std/assert@1.0.19": {
+      "integrity": "eaada96ee120cb980bc47e040f82814d786fe8162ecc53c91d8df60b8755991e",
+      "dependencies": [
+        "jsr:@std/internal@^1.0.12"
+      ]
     },
     "@std/bytes@1.0.6": {
       "integrity": "f6ac6adbd8ccd99314045f5703e23af0a68d7f7e58364b47d2c7f408aeb5820a"
@@ -49,13 +84,20 @@
     "@std/fmt@1.0.10": {
       "integrity": "90dfba288802ac6de82fb31d0917eb9e4450b9925b954d5e51fc29ac07419db5"
     },
+    "@std/fs@1.0.24": {
+      "integrity": "f3061b45b81673a2bece689da041df32d174be064c89eb6397fb5718d3fb7877",
+      "dependencies": [
+        "jsr:@std/internal@^1.0.14",
+        "jsr:@std/path@^1.1.5"
+      ]
+    },
     "@std/internal@1.0.14": {
       "integrity": "291516b3d4c35024d6ffbc0a9df5bf4c64116e05b50012cf846710152d2ffdf7"
     },
     "@std/path@1.1.6": {
       "integrity": "c68485c2a4dfbb5ae3cc74fae4e8c4e5d874cf8a8ed12927917235c758b46cbe",
       "dependencies": [
-        "jsr:@std/internal"
+        "jsr:@std/internal@^1.0.14"
       ]
     },
     "@std/uuid@1.1.1": {
@@ -304,6 +346,7 @@
   "workspace": {
     "dependencies": [
       "jsr:@db/postgres@~0.19.5",
+      "jsr:@felix/argon2@^3.0.6",
       "jsr:@hono/hono@4",
       "jsr:@std/dotenv@~0.225.7",
       "jsr:@std/uuid@^1.1.1",

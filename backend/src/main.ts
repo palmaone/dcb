@@ -2,7 +2,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 // import { logger } from "hono/logger";
-import { client, isConnected } from "./db/connection.ts"
+import { pgdb_client, isConnected } from "./db/connection.ts"
 import { Usuario, UsuarioTData } from "../../shared/models/Usuario.ts";
 import { Sucursal, SucursalTData } from "../../shared/models/Sucursal.ts";
 import pedidos from "./routes/pedidos.ts";
@@ -48,7 +48,7 @@ app.get("/", (c) => {
 app.get("/db-test", async (c) => {
   if (isConnected) {
     try {
-      const result = await client.queryObject`SELECT NOW()`;
+      const result = await pgdb_client.queryObject`SELECT NOW()`;
       return c.json({ status: "connected", time: result.rows[0] });
     } catch (err: Error | unknown) {
       return c.json(
@@ -71,7 +71,7 @@ app.get("/db-test", async (c) => {
 app.get("/usuarios", async (c) => {
   if(isConnected) {
     try {
-      const result = await client.queryObject<Usuario>`SELECT * FROM usuarios`
+      const result = await pgdb_client.queryObject<Usuario>`SELECT * FROM usuarios`
       const usuarios = result.rows.map((u, index) => {
         return { ...u, index: index+1 } as UsuarioTData
       })
@@ -98,7 +98,7 @@ app.get("/usuarios", async (c) => {
 app.get("/sucursales", async (c) => {
   if(isConnected) {
     try {
-      const result = await client.queryObject<Sucursal>`SELECT * FROM sucursales`
+      const result = await pgdb_client.queryObject<Sucursal>`SELECT * FROM sucursales`
       const sucursales = result.rows.map((u, index) => ({ ...u, index: index+1 } as SucursalTData))
       return c.json(sucursales);
     } catch (err: Error | unknown) {
