@@ -1,13 +1,11 @@
 // Deno + Hono entrypoint
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-// import { logger } from "hono/logger";
 import { pgdb_client, isConnected } from "./db/connection.ts"
-import { Usuario, UsuarioTData } from "../../shared/models/Usuario.ts";
-import { Sucursal, SucursalTData } from "../../shared/models/Sucursal.ts";
-import pedidos from "./routes/pedidos.ts";
-import clientes from "./routes/clientes.ts"
-
+import pedidosApp from './routes/pedidos.ts';
+import clientesApp from "./routes/clientes.ts";
+import usuariosApp from "./routes/usuarios.ts";
+import sucursalesApp from "./routes/sucursales.ts";
 
 const app = new Hono();
 
@@ -68,58 +66,9 @@ app.get("/db-test", async (c) => {
   500)
 });
 
-app.get("/usuarios", async (c) => {
-  if(isConnected) {
-    try {
-      const result = await pgdb_client.queryObject<Usuario>`SELECT * FROM usuarios`
-      const usuarios = result.rows.map((u, index) => {
-        return { ...u, index: index+1 } as UsuarioTData
-      })
-      return c.json(usuarios);
-    } catch (err: Error | unknown) {
-      // isConnected = false;
-      return c.json(
-        {
-          status: "error",
-          error: err instanceof Error ? err.message : String(err)
-        },
-        500
-      );
-    }
-  }
-  return c.json(
-    {
-      status: "error",
-      error: "connection failed"
-    },
-  500)
-});
-
-app.get("/sucursales", async (c) => {
-  if(isConnected) {
-    try {
-      const result = await pgdb_client.queryObject<Sucursal>`SELECT * FROM sucursales`
-      const sucursales = result.rows.map((u, index) => ({ ...u, index: index+1 } as SucursalTData))
-      return c.json(sucursales);
-    } catch (err: Error | unknown) {
-      return c.json(
-        {
-          status: "error",
-          error: err instanceof Error ? err.message : String(err)
-        },
-        500
-      );
-    }
-  }
-  return c.json(
-    {
-      status: "error",
-      error: "connection failed"
-    },
-  500)
-});
-
-app.route("/pedidos", pedidos)
-app.route("/clientes", clientes)
+app.route("/sucursales", sucursalesApp)
+app.route("/usuarios", usuariosApp);
+app.route("/pedidos", pedidosApp)
+app.route("/clientes", clientesApp)
 
 Deno.serve({ port: 8000 }, app.fetch);

@@ -9,11 +9,11 @@
           <v-toolbar flat>
               <v-toolbar-title>Usuarios</v-toolbar-title>
               <v-spacer />
-              <nuevo-usuario-modal />
+              <nuevo-usuario-modal @usuario-creado="fetchUsuarios"/>
           </v-toolbar>
       </template>
       <template #[`item.actions`]="{ item }">
-          <v-card rounded="10" color="grey-lighten-3" variant="elevated" max-width="fit-content">
+          <v-card rounded="10" :color="isDarkMode() ? 'grey-darken-3' : 'grey-lighten-3'" variant="elevated" max-width="fit-content">
             <v-btn icon="mdi-pencil" variant="plain" size="small"></v-btn>
             <v-tooltip color="default" :open-on-hover="false" open-on-click interactive>
               <template #activator="{ props: activatorProps }">
@@ -47,14 +47,14 @@
               </template>
             </v-tooltip>
           </v-card>
-         </template>
+      </template>
       </v-data-table>
     </v-card>
   </v-container>
 </template>
 <script lang="ts" setup>
 import { onMounted, ref, defineComponent } from 'vue';
-import { getApiBase, safeFetchJson } from '../composables/main.compose';
+import { getApiBase, isDarkMode, safeFetchJson } from '../composables/main.compose';
 import NuevoUsuarioModal from './Usuarios/NuevoUsuarioModal.vue'
 import { UsuarioTData } from '../../../shared/models/Usuario';
 defineComponent({
@@ -84,6 +84,12 @@ const tbl_headers = [
     key: 'username',
   },
   {
+    title: 'Rol',
+    align: 'start',
+    sortable: true,
+    key: 'rol',
+  },
+  {
     title: 'Telefono',
     align: 'start',
     sortable: true,
@@ -103,9 +109,26 @@ const tbl_headers = [
   }
 ] as const
 
-const borrarUsuario = async (userItem: UsuarioTData) => {
-  console.log('userItem', userItem);
-  
+const borrarUsuario = async (usuario: UsuarioTData) => {
+  try { 
+    const response: Response = await fetch(`${getApiBase()}/usuarios/${usuario.id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'aplication/json',
+        // Add 'Authorization': 'Bearer token' here if needed
+      }
+    });
+    if(response.ok) {
+      const data = await response.json();
+      console.log('Server response: ', data);
+      fetchUsuarios()
+    } else {
+      console.error(`HTTP error! status: ${response.status}`);
+    }  
+    
+   } catch (error) {
+    console.error('Request failed:', error);
+   }
 }
 
 const fetchUsuarios = async () => {

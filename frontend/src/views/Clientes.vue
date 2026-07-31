@@ -10,7 +10,7 @@
           </v-toolbar>
         </template>
          <template #[`item.actions`]="{ item }">
-          <v-card rounded="10" color="grey-lighten-3" variant="elevated" max-width="fit-content">
+          <v-card rounded="10" :color="isDarkMode() ? 'grey-darken-3' : 'grey-lighten-3'" variant="elevated" max-width="fit-content">
             <v-tooltip location="left top">
               <template #activator="{ props: activatorProps }">                  
                 <v-btn
@@ -68,7 +68,7 @@
 </template>
 <script lang="ts" setup>
 import { onMounted, ref, defineComponent } from 'vue';
-import { getApiBase, safeFetchJson } from '../composables/main.compose';
+import { getApiBase, isDarkMode, safeFetchJson } from '../composables/main.compose';
 import NuevoClienteModal from './Clientes/NuevoClienteModal.vue';
 
 import { ClienteTData } from '../../../shared/models/Cliente';
@@ -139,7 +139,6 @@ const tbl_headers = [
 ] as const
 
 const fetchClientes = async () => {
-  console.log(`Connecting to backend at ${apiBase}`)
   try {
     const data = await safeFetchJson(apiBase + '/clientes')
     clientes.value = data
@@ -148,11 +147,9 @@ const fetchClientes = async () => {
   }
 }
 
-const borrarCliente = async (item: ClienteTData) => {
-  console.log("item", item);
-  
+const borrarCliente = async (cliente: ClienteTData) => {  
   try { 
-    const response: Response = await fetch(`${apiBase}/clientes/${item.id}`, {
+    const response: Response = await fetch(`${apiBase}/clientes/${cliente.id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'aplication/json',

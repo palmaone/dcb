@@ -8,9 +8,9 @@ import { Sucursal } from "../../../shared/models/Sucursal.ts";
 import { BlankEnv, BlankInput } from "hono/types";
 import { QueryObjectResult } from "@db/postgres";
 
-const pedidos = new Hono()
+const pedidosApp = new Hono()
 
-pedidos.get("/:param", async (c) => {
+pedidosApp.get("/:param", async (c) => {
   console.log("fetching pedidos");
   const param = c.req.param('param')
   console.log("status param: ", param);
@@ -81,4 +81,4 @@ const format_pedidos = async ( result: QueryObjectResult<Pedido>, c: Context<Bla
     }
 }
 
-export default pedidos;
+export default pedidosApp;

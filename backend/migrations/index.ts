@@ -14,12 +14,12 @@ export const migrations: Migration[] = [
     sql: [
       `CREATE TABLE IF NOT EXISTS usuarios (
         id UUID PRIMARY KEY DEFAULT uuidv7(),
-        nombre TEXT NOT NULL,
+        nombre TEXT NOT NULL UNIQUE,
         apellido TEXT NOT NULL,
-        username TEXT NOT NULL,
+        username TEXT NOT NULL UNIQUE,
         password TEXT NOT NULL,
         telefono TEXT,
-        email TEXT NOT NULL,
+        email TEXT NOT NULL UNIQUE,
         rol TEXT NOT NULL,
         created_at TIMESTAMPTZ DEFAULT NOW()
         );
@@ -40,7 +40,8 @@ export const migrations: Migration[] = [
       `,
       `CREATE TABLE IF NOT EXISTS sucursales(
         id UUID PRIMARY KEY DEFAULT uuidv7(),
-        nombre TEXT NOT NULL,
+        nombre TEXT NOT NULL UNIQUE,
+        tipo TEXT NOT NULL,
         direccion TEXT NOT NULL,
         telefono TEXT NOT NULL,
         email TEXT,
@@ -77,7 +78,7 @@ export const migrations: Migration[] = [
       `,
       `CREATE TABLE IF NOT EXISTS pedidos(
         id UUID PRIMARY KEY DEFAULT uuidv7(),
-        folio INT NOT NULL,
+        folio SERIAL,
         id_sucursal UUID NOT NULL REFERENCES sucursales(id),
         id_cliente UUID  NOT NULL REFERENCES clientes(id),
         id_usuario UUID NOT NULL REFERENCES usuarios(id),

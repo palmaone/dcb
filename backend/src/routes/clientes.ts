@@ -2,17 +2,15 @@ import { Hono } from "hono";
 import { pgdb_client, isConnected } from "../db/connection.ts";
 import { Cliente, ClienteTData, NuevoCliente } from "../../../shared/models/Cliente.ts";
 
-const clientes = new Hono()
+const clientesApp = new Hono()
 
-clientes.post("/", async (c) => {
-  // 1. Parse the JSON body
+clientesApp.post("/", async (c) => {
   const body = await c.req.json()
-  console.log("body", body);
   try {
     // 2. TODO: Add validation here (see below)
     const clientData: NuevoCliente = body 
     // 3. Insert into database (pseudo-code)
-    const nuevoCliente = await pgdb_client.queryObject<Cliente>`
+    await pgdb_client.queryObject<Cliente>`
       INSERT INTO clientes (
         nombre,
         apellido,
@@ -23,8 +21,7 @@ clientes.post("/", async (c) => {
         entre_calles,
         persona_confianza,
         notas
-      ) 
-      VALUES (
+      ) VALUES (
         ${clientData.nombre.trim()},
         ${clientData.apellido.trim()},
         ${clientData.domicilio},
@@ -36,13 +33,13 @@ clientes.post("/", async (c) => {
         ${clientData.notas}
       );
     `;
-    return c.json({ id: nuevoCliente.rows[0] }, 201)
+    return c.json(201)
   } catch (error) {
-    return c.json({ error }, 400)
+    return c.json({ error }, 400);
   } 
 })
 
-clientes.delete("/:id", async (c) => {
+clientesApp.delete("/:id", async (c) => {
   if(isConnected) {
      const id_cliente = c.req.param('id')
      console.log("id_cliente", id_cliente);
@@ -68,13 +65,13 @@ clientes.delete("/:id", async (c) => {
   500)
 })
 
-clientes.get("/", async (c) => {
+clientesApp.get("/", async (c) => {
   if(isConnected) {
     try {
       const result = await pgdb_client.queryObject<Cliente>`SELECT * FROM clientes`
-      const clientes = result.rows.map((u, index) => {
-        const nombre_completo = `${u.nombre} ${u.apellido}`
-        return { ...u, index: index+1, nombre_completo } as ClienteTData
+      const clientes = result.rows.map((c, index) => {
+        const nombre_completo = `${c.nombre} ${c.apellido}`
+        return { ...c, index: index+1, nombre_completo } as ClienteTData
       })
       return c.json(clientes);
     } catch (err: Error | unknown) {
@@ -95,4 +92,4 @@ clientes.get("/", async (c) => {
   500)
 });
 
-export default clientes;
+export default clientesApp;

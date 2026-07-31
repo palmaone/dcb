@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "start": "deno run --allow-net --allow-env --watch src/main.ts",
+    "start": "deno run --allow-net --allow-env --allow-read=/deno-dir --allow-write=/deno-dir --allow-ffi --watch src/main.ts",
     "migrate": "deno run -A migrate.ts"
   },
   "imports": {

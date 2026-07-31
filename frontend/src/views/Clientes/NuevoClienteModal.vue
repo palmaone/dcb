@@ -159,6 +159,7 @@ const save = async (isActive: Ref<boolean, boolean>) => {
       console.log('Server response: ', data);
       isActive.value = false
       emit('clienteCreado')
+      resetFormData();
     }
     
   } catch (error) {
@@ -167,8 +168,8 @@ const save = async (isActive: Ref<boolean, boolean>) => {
 
   
 }
-const cancel = (isActive: Ref<boolean, boolean>) => {
-  isActive.value = false
+
+const resetFormData = () => {
   nombre.value = '' 
   apellido.value = ''
   domicilio.value = ''
@@ -176,6 +177,11 @@ const cancel = (isActive: Ref<boolean, boolean>) => {
   entreCalles.value = ''
   personaConfianza.value = ''
   telefono.value = ''
+}
+
+const cancel = (isActive: Ref<boolean, boolean>) => {
+  isActive.value = false
+  resetFormData();  
 }
 
 </script>

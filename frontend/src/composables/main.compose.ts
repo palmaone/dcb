@@ -1,3 +1,7 @@
+import { useTheme } from 'vuetify'
+
+export const isDarkMode = (): boolean => useTheme().current.value.dark
+
 export function getApiBase(): string {
   const envUrl = (import.meta as any).env?.VITE_API_URL?.trim()
   if (envUrl) {

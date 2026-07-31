@@ -2,7 +2,10 @@
    "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "..",
-    "types": ["vuetify"] 
+    "types": ["vuetify"],
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "moduleResolution": "bundler"
   },
   "include": [
     "src/**/*.ts",

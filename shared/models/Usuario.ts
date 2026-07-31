@@ -2,6 +2,7 @@ export interface Usuario {
   id: number
   nombre: string
   apellido: string
+  rol: string
   username: string
   password: string
   telefono: string
