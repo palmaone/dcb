@@ -14,8 +14,11 @@ clientesApp.post("/", async (c) => {
       INSERT INTO clientes (
         nombre,
         apellido,
-        domicilio,
+        calle,
+        num_ext,
+        num_int,
         colonia,
+        codigo_postal,
         telefono,
         email,
         entre_calles,
@@ -24,8 +27,11 @@ clientesApp.post("/", async (c) => {
       ) VALUES (
         ${clientData.nombre.trim()},
         ${clientData.apellido.trim()},
-        ${clientData.domicilio},
+        ${clientData.calle},
+        ${clientData.num_ext},
+        ${clientData.num_int},
         ${clientData.colonia},
+        ${clientData.codigo_postal},
         ${clientData.telefono},
         ${clientData.email.trim()},
         ${clientData.entre_calles},
@@ -71,7 +77,13 @@ clientesApp.get("/", async (c) => {
       const result = await pgdb_client.queryObject<Cliente>`SELECT * FROM clientes`
       const clientes = result.rows.map((c, index) => {
         const nombre_completo = `${c.nombre} ${c.apellido}`
-        return { ...c, index: index+1, nombre_completo } as ClienteTData
+        const num_int = c.num_int ? `Nº Int.${c.num_int}` : '';
+        const codigo_postal = c.codigo_postal ? `C.P. ${c.codigo_postal}` : '';
+        const domicilio = `
+          Calle ${c.calle} Nº Ext. ${c.num_ext} ${num_int}
+          Col. ${c.colonia} ${codigo_postal}
+        `;
+        return { ...c, index: index+1, nombre_completo, domicilio } as ClienteTData
       })
       return c.json(clientes);
     } catch (err: Error | unknown) {
@@ -91,5 +103,48 @@ clientesApp.get("/", async (c) => {
     },
   500)
 });
+
+// GET /clientes/search?nombre=alice - search by nombre
+clientesApp.get('/search', async (c) => {
+  const searchQuery = c.req.query('nombre')?.toLowerCase().trim()
+
+  if (!searchQuery) {
+    return c.json({ error: 'Missing "nombre" query parameter' }, 400)
+  }
+  console.log("searchQuery", '%' + searchQuery + '%');
+  
+  if(isConnected) {
+    try {
+      const result = await pgdb_client.queryObject<Cliente>`
+        SELECT * FROM clientes
+          WHERE nombre ILIKE ${ '%' + searchQuery + '%'}
+            OR apellido ILIKE ${ '%' + searchQuery + '%'}
+          ORDER BY nombre;
+      `;
+      const clientes = result.rows.map((c, index) => {
+        const nombre_completo = `${c.nombre} ${c.apellido}`
+        return { ...c, index: index+1, nombre_completo } as ClienteTData
+      })
+      console.log("clientes", clientes);
+      
+      return c.json(clientes);
+    } catch (err: Error | unknown) {
+      return c.json(
+        {
+          status: "error",
+          error: err instanceof Error ? err.message : String(err)
+        },
+        500
+      );
+    }
+  }
+  return c.json(
+    {
+      status: "error",
+      error: "connection failed"
+    },
+  500)
+})
+
 
 export default clientesApp;

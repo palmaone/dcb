@@ -40,10 +40,19 @@
                 <v-text-field v-model="apellido" label="Apellido*" :rules="[required_field]"></v-text-field>
               </v-col>
               <v-col cols="6">
-                <v-text-field v-model="domicilio" label="Domicilio*" :rules="[required_field]"></v-text-field>
+                <v-text-field v-model="calle" label="Calle*" :rules="[required_field]"></v-text-field>
+              </v-col>
+              <v-col cols="3">
+                <v-text-field v-model="numeroExt" label="Nº Exterior*" :rules="[required_field]"></v-text-field>
+              </v-col>
+              <v-col cols="3">
+                <v-text-field v-model="numeroInterior" label="Nº Interior"></v-text-field>
               </v-col>
               <v-col cols="6">
                 <v-text-field v-model="colonia" label="Colonia*" :rules="[required_field]"></v-text-field>
+              </v-col>
+              <v-col cols="6">
+                <v-text-field v-model="codigoPost" label="C.P."></v-text-field>
               </v-col>
               <v-col cols="6">
                 <v-text-field v-model="entreCalles" label="Entre calles*" :rules="[required_field]"></v-text-field>
@@ -91,8 +100,11 @@ const apiBase = getApiBase()
 const emit = defineEmits([ "clienteCreado" ])
 const nombre = ref('')
 const apellido =  ref('')
-const domicilio =  ref('')
+const calle =  ref('')
+const numeroExt = ref('')
+const numeroInterior = ref('');
 const colonia =  ref('')
+const codigoPost = ref('')
 const entreCalles =  ref('')
 const personaConfianza =  ref('')
 const telefono =  ref('')
@@ -114,7 +126,7 @@ const notas = ref<string|null>(null)
 const validData = computed((): boolean=> {
   return !!nombre.value 
     && !!apellido.value
-    && !!domicilio.value
+    && !!calle.value
     && !!colonia.value
     && !!entreCalles.value
     && !!personaConfianza.value
@@ -133,8 +145,10 @@ const save = async (isActive: Ref<boolean, boolean>) => {
   const cliente: NuevoCliente = {
     nombre: nombre.value,
     apellido: apellido.value,
-    domicilio: domicilio.value,
+    calle: calle.value,
+    num_ext: numeroExt.value,
     colonia: colonia.value,
+    codigo_postal: codigoPost.value,
     entre_calles: entreCalles.value,
     persona_confianza: personaConfianza.value,
     telefono: telefono.value,
@@ -170,13 +184,14 @@ const save = async (isActive: Ref<boolean, boolean>) => {
 }
 
 const resetFormData = () => {
-  nombre.value = '' 
-  apellido.value = ''
-  domicilio.value = ''
-  colonia.value = ''
-  entreCalles.value = ''
-  personaConfianza.value = ''
-  telefono.value = ''
+  nombre.value = ''; 
+  apellido.value = '';
+  calle.value = '';
+  numeroExt.value = '';
+  colonia.value = '';
+  entreCalles.value = '';
+  personaConfianza.value = '';
+  telefono.value = '';
 }
 
 const cancel = (isActive: Ref<boolean, boolean>) => {

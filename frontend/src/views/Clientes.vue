@@ -68,7 +68,7 @@
 </template>
 <script lang="ts" setup>
 import { onMounted, ref, defineComponent } from 'vue';
-import { getApiBase, isDarkMode, safeFetchJson } from '../composables/main.compose';
+import { getApiBase, isDarkMode, safeFetchJson } from '../composables/main.compose.ts';
 import NuevoClienteModal from './Clientes/NuevoClienteModal.vue';
 
 import { ClienteTData } from '../../../shared/models/Cliente';

@@ -9,22 +9,55 @@
         <v-toolbar flat>
             <v-toolbar-title>Pedidos Pendientes</v-toolbar-title>
             <v-spacer />
-            <v-btn variant="tonal" color="deep-orange-accent-4" icon="mdi-plus" @click="openNewOrderModal"></v-btn>
+            <nuevo-pedido-modal />
         </v-toolbar>
       </template>
+       <template #[`item.actions`]="{ item }">
+          <v-card rounded="10" :color="isDarkMode() ? 'grey-darken-3' : 'grey-lighten-3'" variant="elevated" max-width="fit-content">
+            
+            <v-btn icon="mdi-pencil" variant="plain" size="small"></v-btn>
+            <v-tooltip color="default" :open-on-hover="false" open-on-click interactive>
+              <template #activator="{ props: activatorProps }">
+                <v-btn
+                  icon="mdi-delete"
+                  variant="plain"
+                  size="small"
+                  color="red"
+                  v-bind="activatorProps"
+                ></v-btn>
+              </template>
+              <template #default="{isActive}">
+                <div>
+                  <span class="mr-2">¿Borrar pedido {{(item as PedidoTData).folio}}?</span>
+                  <v-btn
+                    size="x-small"
+                    variant="tonal"
+                    class="mr-2"
+                    @click="isActive.value = false"
+                  >
+                    No
+                  </v-btn>
+                  <v-btn
+                    size="x-small"
+                    variant="outlined"
+                    @click="borrarPedido({...item as PedidoTData})"
+                  >
+                    Si
+                  </v-btn>
+                </div>
+              </template>
+            </v-tooltip>
+          </v-card>
+         </template>
     </v-data-table>
   </div>
-  <nuevo-pedido-modal />
 </template>
 <script setup lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
-
-import { uiStore } from '../../stores/ui.store.ts'
 import NuevoPedidoModal from '../../components/NuevoPedido/NuevoPedidoModal.vue'
-import { getApiBase, safeFetchJson } from '../../composables/main.compose.ts';
+import { getApiBase, isDarkMode, safeFetchJson } from '../../composables/main.compose.ts';
 import { PedidoTData } from '../../../../shared/models/Pedido.ts';
 
-const { showNewOrderModal } = uiStore()
 defineComponent({
   name: 'PedidosPendientes',
   components: {
@@ -69,16 +102,20 @@ const tbl_headers = [
     align: 'start',
     sortable: true,
     key: 'quien_recibe', 
+  },
+  {
+    title: 'Acciones admin',
+    align: 'start',
+    sortable: false,
+    key: 'actions'
   }
-]
+] as const
 
-function openNewOrderModal() {
-  showNewOrderModal(true)
+const borrarPedido = () => {
+
 }
-
 onMounted(async ()=> {
   const apiBase = getApiBase()
-     console.log(`Connecting to backend at ${apiBase}`)
     try {
       const data = await safeFetchJson(apiBase + '/pedidos/pendientes')
       console.log("data", data);
